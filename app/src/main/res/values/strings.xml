@@ -1,8 +1,11 @@
 <resources>
     <string name="app_name">SquareKick</string>
+
     <string name="menu_home">Home</string>
     <string name="menu_favourite">Favourite</string>
     <string name="menu_statistics">Statistics</string>
 
     <string name="hello_blank_fragment">Functionality under construction</string>
+
+    <string name="no_internet_error_message">Make sure you have data connection</string>
 </resources>
