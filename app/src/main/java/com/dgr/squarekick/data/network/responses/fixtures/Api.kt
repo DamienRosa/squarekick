@@ -1,4 +1,4 @@
-package com.dgr.squarekick.data.network.responses
+package com.dgr.squarekick.data.network.responses.fixtures
 
 /*
 Copyright (c) 2019 Kotlin Data Classes Generated from JSON powered by http://www.json2kotlin.com
@@ -12,7 +12,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 For support, please feel free to contact me at https://www.linkedin.com/in/syedabsar */
 
 
-data class Api (
-	val results : Int,
-	val fixtures : List<Fixtures>
+data class Api(
+    val results: Int,
+    val fixtures: List<Fixtures>
 )

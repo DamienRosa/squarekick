@@ -1,4 +1,4 @@
-package com.dgr.squarekick.data.network.responses
+package com.dgr.squarekick.data.network.responses.leagues
 
 /*
 Copyright (c) 2019 Kotlin Data Classes Generated from JSON powered by http://www.json2kotlin.com
@@ -12,22 +12,16 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 For support, please feel free to contact me at https://www.linkedin.com/in/syedabsar */
 
 
-data class Fixtures (
-	val fixture_id : Int,
-	val league_id : Int,
-	val event_date : String,
-	val event_timestamp : Int,
-	val firstHalfStart : Int,
-	val secondHalfStart : Int,
-	val round : String,
-	val status : String,
-	val statusShort : String,
-	val elapsed : Int,
-	val venue : String,
-	val referee : String,
-	val homeTeam : HomeTeam,
-	val awayTeam : AwayTeam,
-	val goalsHomeTeam : Int,
-	val goalsAwayTeam : Int,
-	val score : Score
+data class Leagues(
+    val league_id: Int,
+    val name: String,
+    val country: String,
+    val country_code: String,
+    val season: Int,
+    val season_start: String,
+    val season_end: String,
+    val logo: String,
+    val flag: String,
+    val standings: Int,
+    val is_current: Int
 )

@@ -1,6 +1,7 @@
 package com.dgr.squarekick.data.network
 
-import com.dgr.squarekick.data.network.responses.FixturesResponse
+import com.dgr.squarekick.data.network.responses.fixtures.FixturesResponse
+import com.dgr.squarekick.data.network.responses.leagues.LeaguesResponse
 import okhttp3.OkHttpClient
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -11,13 +12,16 @@ import retrofit2.http.Path
 interface ApiFootballAPI {
 
     @GET("fixtures/date/{date}")
-    suspend fun getActiveFixtures(@Path("date") date: String) : Response<FixturesResponse>
+    suspend fun getFixturesByDate(@Path("date") date: String): Response<FixturesResponse>
+
+    @GET("leagues")
+    suspend fun getCompetitionsPerCountry(): Response<LeaguesResponse>
 
     companion object {
 
         private const val BASE_API_URL = "https://api-football-v1.p.rapidapi.com/v2/"
 
-        operator fun invoke(networkConnectionInterceptor: NetworkConnectionInterceptor) : ApiFootballAPI {
+        operator fun invoke(networkConnectionInterceptor: NetworkConnectionInterceptor): ApiFootballAPI {
             val okHttpClient = OkHttpClient.Builder()
                 .addInterceptor(networkConnectionInterceptor)
                 .build()

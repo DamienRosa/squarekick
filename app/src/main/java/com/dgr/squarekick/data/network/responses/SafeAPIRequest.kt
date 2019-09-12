@@ -17,7 +17,8 @@ abstract class SafeAPIRequest {
             error?.let {
                 try {
                     message.append(JSONObject(it).getString("message"))
-                } catch (e: JSONException) { }
+                } catch (e: JSONException) {
+                }
                 message.append("\n")
             }
             message.append("Error code: ${response.code()}")

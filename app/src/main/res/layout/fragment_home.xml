@@ -1,22 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.home.HomeFragment">
 
-    <data>
-        <variable
-            name="viewModel"
-            type="com.dgr.squarekick.ui.home.HomeViewModel" />
-    </data>
-
-    <FrameLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:visibility="visible"
+        android:id="@+id/rv_competitions"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.home.HomeFragment">
+        tools:listitem="@layout/item_competition" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Hello" />
+    <FrameLayout
+        android:visibility="gone"
+        android:id="@+id/fl_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimaryTransparency">
+
+        <com.github.ybq.android.spinkit.SpinKitView
+            android:id="@+id/spin_kit"
+            style="@style/SpinKitView.Large.CubeGrid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:SpinKit_Color="@color/colorPrimaryDark" />
 
     </FrameLayout>
-</layout>
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_empty_list"
+        style="@style/TextNoGamesStyle"
+        android:gravity="center"
+        android:padding="@dimen/padding_16"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/no_available_fixtures"/>
+
+</FrameLayout>
