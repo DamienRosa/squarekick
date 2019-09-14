@@ -21,7 +21,7 @@ data class Leagues(
     val season_start: String,
     val season_end: String,
     val logo: String,
-    val flag: String,
+    val flag: String? ,
     val standings: Int,
     val is_current: Int
 )

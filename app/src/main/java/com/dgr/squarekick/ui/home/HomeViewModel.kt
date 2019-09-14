@@ -4,12 +4,17 @@ import androidx.lifecycle.ViewModel
 import com.dgr.squarekick.data.repositories.FixturesRepository
 import com.dgr.squarekick.utils.Coroutines
 import com.dgr.squarekick.utils.NoInternetConnection
+import com.dgr.squarekick.utils.lazyDeferred
 
 class HomeViewModel(
     private val fixturesRepository: FixturesRepository
 ) : ViewModel() {
 
     var homeListener: HomeListener? = null
+
+    val leagues by lazyDeferred {
+        fixturesRepository.getLeaguesList()
+    }
 
     fun fetchFixturesDate(date: String) {
         try {

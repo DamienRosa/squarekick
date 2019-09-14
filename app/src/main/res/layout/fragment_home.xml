@@ -6,12 +6,28 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:visibility="visible"
-        android:id="@+id/rv_competitions"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@layout/item_competition" />
+        android:orientation="vertical"
+        android:layout_height="match_parent" >
+
+        <com.vivekkaushik.datepicker.DatePickerTimeline
+            android:id="@+id/datePickerTimeline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:background="@color/colorPrimary"
+            app:dateTextColor="@android:color/white"
+            app:dayTextColor="@android:color/white"
+            app:monthTextColor="@android:color/white"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:visibility="visible"
+            android:id="@+id/rv_competitions"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/item_competition" />
+    </LinearLayout>
 
     <FrameLayout
         android:visibility="gone"

@@ -1,6 +1,7 @@
 package com.dgr.squarekick
 
 import android.app.Application
+import com.dgr.squarekick.data.db.SquareKickDataBase
 import com.dgr.squarekick.data.network.ApiFootballAPI
 import com.dgr.squarekick.data.network.NetworkConnectionInterceptor
 import com.dgr.squarekick.data.repositories.FixturesRepository
@@ -18,8 +19,9 @@ class SquareKickApplication : Application(), KodeinAware {
     override val kodein = Kodein.lazy {
         import(androidXModule(this@SquareKickApplication))
         bind() from singleton { NetworkConnectionInterceptor(instance()) }
+        bind() from singleton { SquareKickDataBase(instance()) }
         bind() from singleton { ApiFootballAPI(instance()) }
-        bind() from singleton { FixturesRepository(instance()) }
+        bind() from singleton { FixturesRepository(instance(), instance()) }
         bind() from provider { HomeViewModelFactory(instance()) }
     }
 }

@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="leagueData"
             type="com.dgr.squarekick.ui.home.LeaguesFixtures" />
@@ -35,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/padding_16"
-            android:text="@{leagueData.league.country + '-' + leagueData.league.name}"
+            android:text="@{leagueData.league.country + ':' + leagueData.league.name}"
             android:textColor="@color/colorSecondaryText"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@+id/iv_country_flag"

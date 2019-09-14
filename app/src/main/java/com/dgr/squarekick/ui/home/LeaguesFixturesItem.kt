@@ -12,5 +12,4 @@ class LeaguesFixturesItem(
     }
 
     override fun getLayout(): Int = R.layout.item_competition
-
 }
