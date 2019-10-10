@@ -5,5 +5,5 @@ import com.dgr.squarekick.data.network.responses.leagues.Leagues
 
 interface HomeListener {
     fun onEmptyList()
-    fun onFeedLayout(fixtures: Map<Leagues, List<Fixtures>>)
+    fun onFeedLayout(date: String, fixtures: Map<Leagues, List<Fixtures>>)
 }

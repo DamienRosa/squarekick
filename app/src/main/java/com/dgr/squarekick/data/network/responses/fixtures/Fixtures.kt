@@ -1,5 +1,8 @@
 package com.dgr.squarekick.data.network.responses.fixtures
 
+import android.os.Parcel
+import android.os.Parcelable
+
 /*
 Copyright (c) 2019 Kotlin Data Classes Generated from JSON powered by http://www.json2kotlin.com
 
@@ -15,19 +18,74 @@ For support, please feel free to contact me at https://www.linkedin.com/in/syeda
 data class Fixtures(
     val fixture_id: Int,
     val league_id: Int,
-    val event_date: String,
+    val event_date: String?,
     val event_timestamp: Int,
     val firstHalfStart: Int,
     val secondHalfStart: Int,
-    val round: String,
-    val status: String,
-    val statusShort: String,
+    val round: String?,
+    val status: String?,
+    val statusShort: String?,
     val elapsed: Int,
-    val venue: String,
-    val referee: String,
-    val homeTeam: HomeTeam,
-    val awayTeam: AwayTeam,
+    val venue: String?,
+    val referee: String?,
+    val homeTeam: HomeTeam?,
+    val awayTeam: AwayTeam?,
     val goalsHomeTeam: Int,
     val goalsAwayTeam: Int,
-    val score: Score
-)
+    val score: Score?
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readInt(),
+        parcel.readInt(),
+        parcel.readString(),
+        parcel.readInt(),
+        parcel.readInt(),
+        parcel.readInt(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readInt(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readParcelable(HomeTeam::class.java.classLoader),
+        parcel.readParcelable(AwayTeam::class.java.classLoader),
+        parcel.readInt(),
+        parcel.readInt(),
+        parcel.readParcelable(Score::class.java.classLoader)
+    ) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(fixture_id)
+        parcel.writeInt(league_id)
+        parcel.writeString(event_date)
+        parcel.writeInt(event_timestamp)
+        parcel.writeInt(firstHalfStart)
+        parcel.writeInt(secondHalfStart)
+        parcel.writeString(round)
+        parcel.writeString(status)
+        parcel.writeString(statusShort)
+        parcel.writeInt(elapsed)
+        parcel.writeString(venue)
+        parcel.writeString(referee)
+        parcel.writeParcelable(homeTeam, flags)
+        parcel.writeParcelable(awayTeam, flags)
+        parcel.writeInt(goalsHomeTeam)
+        parcel.writeInt(goalsAwayTeam)
+        parcel.writeParcelable(score, flags)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Fixtures> {
+        override fun createFromParcel(parcel: Parcel): Fixtures {
+            return Fixtures(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Fixtures?> {
+            return arrayOfNulls(size)
+        }
+    }
+}

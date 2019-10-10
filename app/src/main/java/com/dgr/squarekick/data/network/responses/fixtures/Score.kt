@@ -1,5 +1,8 @@
 package com.dgr.squarekick.data.network.responses.fixtures
 
+import android.os.Parcel
+import android.os.Parcelable
+
 /*
 Copyright (c) 2019 Kotlin Data Classes Generated from JSON powered by http://www.json2kotlin.com
 
@@ -14,8 +17,36 @@ For support, please feel free to contact me at https://www.linkedin.com/in/syeda
 
 data class Score(
 
-    val halftime: String,
-    val fulltime: String,
-    val extratime: String,
-    val penalty: String
-)
+    val halftime: String?,
+    val fulltime: String?,
+    val extratime: String?,
+    val penalty: String?
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString()
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(halftime)
+        parcel.writeString(fulltime)
+        parcel.writeString(extratime)
+        parcel.writeString(penalty)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Score> {
+        override fun createFromParcel(parcel: Parcel): Score {
+            return Score(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Score?> {
+            return arrayOfNulls(size)
+        }
+    }
+}

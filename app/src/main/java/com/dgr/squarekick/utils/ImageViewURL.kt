@@ -1,9 +1,11 @@
 package com.dgr.squarekick.utils
 
 import android.content.Context
+import android.net.Uri
 import android.util.AttributeSet
 import android.widget.ImageView
 import com.dgr.squarekick.R
+import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
 
 class ImageViewURL : ImageView {
 
@@ -18,7 +20,7 @@ class ImageViewURL : ImageView {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         val array = context.obtainStyledAttributes(attrs, R.styleable.ImageViewURL)
         val url = array.getString(R.styleable.ImageViewURL_url)
-        if (url != null) {
+        if (!url.isNullOrEmpty()) {
             requestGlide(url, this)
         }
         array.recycle()
@@ -31,19 +33,9 @@ class ImageViewURL : ImageView {
     )
 
     private fun requestGlide(url: String, imageView: ImageView) {
-//        val httpClient: OkHttpClient = OkHttpClient.Builder()
-//            .cache(Cache(context.cacheDir, 5 * 1024 * 1014))
-//            .build()
-//
-//        val request = Request.Builder().url(url).build()
-//        httpClient.newCall(request).enqueue(object : Callback {
-//            override fun onFailure(call: Call, e: IOException) {
-//            }
-//
-//            override fun onResponse(call: Call, response: Response) {
-//                val stream: InputStream? = response.body()?.byteStream()
-//                Sharp.loadInputStream(stream).into(imageView)
-//            }
-//        })
+        GlideToVectorYou
+            .init()
+            .with(imageView.context.applicationContext)
+            .load(Uri.parse(url), imageView)
     }
 }

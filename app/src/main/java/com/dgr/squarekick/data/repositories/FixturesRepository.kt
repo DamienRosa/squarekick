@@ -3,6 +3,7 @@ package com.dgr.squarekick.data.repositories
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.dgr.squarekick.data.db.SquareKickDataBase
+import com.dgr.squarekick.data.db.entites.FixtureEntity
 import com.dgr.squarekick.data.db.entites.LeagueEntity
 import com.dgr.squarekick.data.network.ApiFootballAPI
 import com.dgr.squarekick.data.network.responses.SafeAPIRequest
@@ -20,11 +21,15 @@ class FixturesRepository(
     private val db: SquareKickDataBase
 ) : SafeAPIRequest() {
 
-    val leaguesList = MutableLiveData<List<Leagues>>()
+    private val fixtureDetails = MutableLiveData<List<Fixtures>>()
+    private val leaguesList = MutableLiveData<List<Leagues>>()
 
     init {
         leaguesList.observeForever {
             saveLeagues(it)
+        }
+        fixtureDetails.observeForever {
+            saveFixture(it)
         }
     }
 
@@ -84,4 +89,39 @@ class FixturesRepository(
         }
     }
 
+    suspend fun getFixtureDetails(fixturesId: Int) : LiveData<List<FixtureEntity>> {
+        return withContext(Dispatchers.IO){
+            fetchFixtureDetails(fixturesId)
+            db.getFixturesDao().getFixtureById(fixturesId)
+        }
+    }
+
+    private suspend fun fetchFixtureDetails(fixturesId: Int) {
+        val response = apiRequest { api.getFixtureById(fixturesId) }
+        fixtureDetails.postValue(response.api.fixtures)
+    }
+
+    private fun saveFixture(fixtures: List<Fixtures>?) {
+        Coroutines.io {
+            val fixturesListDb = fixtures?.map {
+                FixtureEntity(
+                    it.fixture_id,
+                    it.league_id,
+                    it.event_date,
+                    it.event_timestamp,
+                    it.firstHalfStart,
+                    it.secondHalfStart,
+                    it.round,
+                    it.status,
+                    it.statusShort,
+                    it.elapsed,
+                    it.venue,
+                    it.referee,
+                    it.goalsHomeTeam,
+                    it.goalsAwayTeam
+                )
+            }
+            db.getFixturesDao().saveAllFixtures(fixturesListDb!!)
+        }
+    }
 }

@@ -1,5 +1,8 @@
 package com.dgr.squarekick.data.network.responses.fixtures
 
+import android.os.Parcel
+import android.os.Parcelable
+
 /*
 Copyright (c) 2019 Kotlin Data Classes Generated from JSON powered by http://www.json2kotlin.com
 
@@ -15,6 +18,32 @@ For support, please feel free to contact me at https://www.linkedin.com/in/syeda
 data class HomeTeam(
 
     val team_id: Int,
-    val team_name: String,
-    val logo: String
-)
+    val team_name: String?,
+    val logo: String?
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readInt(),
+        parcel.readString(),
+        parcel.readString()
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(team_id)
+        parcel.writeString(team_name)
+        parcel.writeString(logo)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<HomeTeam> {
+        override fun createFromParcel(parcel: Parcel): HomeTeam {
+            return HomeTeam(parcel)
+        }
+
+        override fun newArray(size: Int): Array<HomeTeam?> {
+            return arrayOfNulls(size)
+        }
+    }
+}

@@ -1,5 +1,8 @@
 package com.dgr.squarekick.data.network.responses.leagues
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
 /*
 Copyright (c) 2019 Kotlin Data Classes Generated from JSON powered by http://www.json2kotlin.com
 
@@ -12,6 +15,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 For support, please feel free to contact me at https://www.linkedin.com/in/syedabsar */
 
 
+@Parcelize
 data class Leagues(
     val league_id: Int,
     val name: String,
@@ -24,4 +28,4 @@ data class Leagues(
     val flag: String? ,
     val standings: Int,
     val is_current: Int
-)
+) : Parcelable

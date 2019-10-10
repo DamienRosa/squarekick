@@ -17,6 +17,9 @@ interface ApiFootballAPI {
     @GET("leagues")
     suspend fun getCompetitionsPerCountry(): Response<LeaguesResponse>
 
+    @GET("fixtures/id/{fixture_id}")
+    suspend fun getFixtureById(@Path("fixture_id") fixtureId : Int) : Response<FixturesResponse>
+
     companion object {
 
         private const val BASE_API_URL = "https://api-football-v1.p.rapidapi.com/v2/"

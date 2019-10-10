@@ -8,33 +8,41 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <com.vivekkaushik.datepicker.DatePickerTimeline
             android:id="@+id/datePickerTimeline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8dp"
             android:background="@color/colorPrimary"
+            android:padding="@dimen/padding_8"
             app:dateTextColor="@android:color/white"
             app:dayTextColor="@android:color/white"
-            app:monthTextColor="@android:color/white"/>
+            app:monthTextColor="@android:color/white" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:visibility="visible"
-            android:id="@+id/rv_competitions"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/item_competition" />
+            android:background="@color/colorPrimary">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_competitions"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/shape_section_view"
+                android:visibility="visible"
+                tools:listitem="@layout/item_competition" />
+
+        </FrameLayout>
     </LinearLayout>
 
     <FrameLayout
-        android:visibility="gone"
         android:id="@+id/fl_progress_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimaryTransparency">
+        android:background="@color/colorPrimaryTransparency"
+        android:visibility="gone">
 
         <com.github.ybq.android.spinkit.SpinKitView
             android:id="@+id/spin_kit"
@@ -47,13 +55,13 @@
     </FrameLayout>
 
     <TextView
-        android:visibility="gone"
         android:id="@+id/tv_empty_list"
         style="@style/TextNoGamesStyle"
-        android:gravity="center"
-        android:padding="@dimen/padding_16"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/no_available_fixtures"/>
+        android:gravity="center"
+        android:padding="@dimen/padding_16"
+        android:text="@string/no_available_fixtures"
+        android:visibility="gone" />
 
 </FrameLayout>

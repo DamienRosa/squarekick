@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_fixture"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/padding_8"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <LinearLayout
+        android:id="@+id/ll_home_team"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_home_team_logo"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/padding_4"
+            android:contentDescription="@string/home_team_logo"
+            tools:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/tv_home_team_name"
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:lines="2"
+            android:minLines="2"
+            android:singleLine="false"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            tools:text="TextView" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_away_team"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_away_team_logo"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/padding_4"
+            android:contentDescription="@string/away_team_logo"
+            tools:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/tv_away_team_name"
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:lines="2"
+            android:minLines="2"
+            android:singleLine="false"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            tools:text="TextView" />
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_ongoing_game"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/tv_competition_name"
+        app:layout_constraintEnd_toStartOf="@+id/ll_away_team"
+        app:layout_constraintStart_toEndOf="@+id/ll_home_team"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_score_away"
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/padding_4"
+            android:textSize="32sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_time_elapsed"
+            app:layout_constraintEnd_toStartOf="@+id/tv_time_elapsed"
+            app:layout_constraintStart_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_time_elapsed"
+            tools:text="0" />
+
+        <TextView
+            android:id="@+id/tv_time_elapsed"
+            style="@style/TextActiveGamesStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_game_event"
+            tools:text="90'" />
+
+        <TextView
+            android:id="@+id/tv_score_home"
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/padding_4"
+            android:textSize="32sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_time_elapsed"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_time_elapsed"
+            app:layout_constraintTop_toTopOf="@+id/tv_time_elapsed"
+            tools:text="0" />
+
+        <TextView
+            android:id="@+id/tv_game_event"
+            style="@style/TextAppearance.AppCompat.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Now playing"
+            android:textColor="@color/design_default_color_on_secondary"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/tv_time_elapsed"
+            app:layout_constraintEnd_toEndOf="@+id/tv_time_elapsed"
+            app:layout_constraintStart_toStartOf="@+id/tv_time_elapsed"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_scheduled_time"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/tv_competition_name"
+        app:layout_constraintEnd_toStartOf="@+id/ll_away_team"
+        app:layout_constraintStart_toEndOf="@+id/ll_home_team"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_scheduled_day"
+            style="@style/TextAppearance.AppCompat.Caption"
+            android:textColor="@color/design_default_color_on_secondary"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/tv_scheduled_time"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Today" />
+
+        <TextView
+            android:id="@+id/tv_scheduled_time"
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_scheduled_day"
+            tools:text="12:00 PM" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/tv_competition_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/padding_8"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/ll_away_team"
+        app:layout_constraintStart_toEndOf="@+id/ll_home_team"
+        tools:text="TextView" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,4 +10,7 @@
     <string name="no_internet_error_message">Make sure you have data connection</string>
     <string name="country_flag">Country Flag</string>
     <string name="no_available_fixtures">Currently there\'s no available fixtures</string>
+    <string name="league_details">League Details</string>
+    <string name="home_team_logo">Home team logo</string>
+    <string name="away_team_logo">Away team logo</string>
 </resources>

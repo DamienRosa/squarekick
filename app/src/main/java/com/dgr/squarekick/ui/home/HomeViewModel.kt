@@ -25,7 +25,7 @@ class HomeViewModel(
                     return@main
                 }
 
-                homeListener?.onFeedLayout(fixturesList)
+                homeListener?.onFeedLayout(date, fixturesList)
                 return@main
             }
         } catch (e: Exception) {
