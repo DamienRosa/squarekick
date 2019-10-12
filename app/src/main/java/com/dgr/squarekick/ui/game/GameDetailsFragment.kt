@@ -18,7 +18,6 @@ import org.kodein.di.generic.instance
 class GameDetailsFragment : Fragment(), KodeinAware {
 
     private var fixturesId: Int = 0
-    private val EXTRA_FIXTURE: String = "extra_fixture"
 
     private lateinit var viewModel: GameDetailsViewModel
 
@@ -26,18 +25,12 @@ class GameDetailsFragment : Fragment(), KodeinAware {
 
     private val repository: FixturesRepository by instance()
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_game_details, container, false)
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+        inflater.inflate(R.layout.fragment_game_details, container, false)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        arguments.let {
-            fixturesId = it!!.getInt(EXTRA_FIXTURE, 0)
-        }
+        arguments?.let { fixturesId = it.getInt(EXTRA_FIXTURE, 0) }
 
         viewModel = ViewModelProviders.of(this, GameDetailsViewModelFactory(repository, fixturesId)).get(GameDetailsViewModel::class.java)
 
@@ -49,5 +42,8 @@ class GameDetailsFragment : Fragment(), KodeinAware {
         viewModel.fixtureDetails.await().observe(this, Observer {
             Log.e("GameDetailsFragment", "fid ${it[0].status}")
         })
+    }
+    companion object{
+        const val EXTRA_FIXTURE: String = "extra_fixture"
     }
 }

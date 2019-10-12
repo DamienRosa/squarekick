@@ -7,8 +7,7 @@ import com.dgr.squarekick.utils.NoInternetConnection
 import com.dgr.squarekick.utils.lazyDeferred
 
 class HomeViewModel(
-    private val fixturesRepository: FixturesRepository
-) : ViewModel() {
+    private val fixturesRepository: FixturesRepository) : ViewModel() {
 
     var homeListener: HomeListener? = null
 

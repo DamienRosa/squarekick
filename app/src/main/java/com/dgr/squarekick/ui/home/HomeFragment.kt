@@ -27,7 +27,7 @@ import java.time.format.DateTimeFormatter
 
 class HomeFragment : Fragment(), KodeinAware, HomeListener {
 
-    private lateinit var viewModel: HomeViewModel
+    private val viewModel: HomeViewModel by lazy {  ViewModelProviders.of(this, factory).get(HomeViewModel::class.java)}
 
     override val kodein by kodein()
 
@@ -42,7 +42,6 @@ class HomeFragment : Fragment(), KodeinAware, HomeListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, factory).get(HomeViewModel::class.java)
 
         viewModel.homeListener = this
 
