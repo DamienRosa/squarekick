@@ -42,14 +42,14 @@ class LeagueFixturesFragment : Fragment() {
         val url = if (!league.flag.isNullOrEmpty()) league.flag else league.logo
         GlideToVectorYou
             .init()
-            .with(this.context!!.applicationContext)
+            .with(requireContext())
             .load(Uri.parse(url), iv_league_logo)
         tv_league_name.text = league.name
 
         val dateTime = LocalDate.parse(date)
         tv_fixtures_date.text = dateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
 
-        val fixturesAdapter = FixturesAdapter(this.context?.applicationContext, fixturesList)
+        val fixturesAdapter = FixturesAdapter(fixturesList)
         rv_fixtures.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
