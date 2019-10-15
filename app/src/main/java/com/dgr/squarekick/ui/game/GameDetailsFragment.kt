@@ -37,6 +37,10 @@ class GameDetailsFragment : Fragment(), KodeinAware {
         bindUI(fixturesId)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+    }
+
     private fun bindUI(fixturesId: Int) = Coroutines.main {
 //        showProgressBar()
         viewModel.fixtureDetails.await().observe(this, Observer {
