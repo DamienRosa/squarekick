@@ -8,7 +8,6 @@ import com.dgr.squarekick.data.network.responses.fixtures.Fixtures
 import com.dgr.squarekick.data.network.responses.leagues.Leagues
 import com.dgr.squarekick.data.repositories.FixturesRepository
 import com.dgr.squarekick.utils.NoInternetConnection
-import com.dgr.squarekick.utils.lazyDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
