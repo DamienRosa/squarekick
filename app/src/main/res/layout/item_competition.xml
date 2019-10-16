@@ -18,7 +18,7 @@
         android:layout_marginStart="@dimen/padding_16"
         android:orientation="vertical">
 
-        <com.dgr.squarekick.utils.ImageViewURL
+        <ImageView
             android:id="@+id/iv_country_flag"
             android:layout_width="@dimen/size_country_flag"
             android:layout_height="@dimen/size_country_flag"
@@ -26,7 +26,6 @@
             android:layout_marginTop="@dimen/padding_16"
             android:layout_marginBottom="@dimen/padding_16"
             android:contentDescription="@string/country_flag"
-            app:url="@{leagueData.url}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

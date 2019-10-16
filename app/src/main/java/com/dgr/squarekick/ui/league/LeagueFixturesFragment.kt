@@ -40,10 +40,12 @@ class LeagueFixturesFragment : Fragment() {
             arguments?.getParcelableArrayList<Fixtures>(HomeFragment.EXTRA_FIXTURE_LIST)!!
 
         val url = if (!league.flag.isNullOrEmpty()) league.flag else league.logo
-        GlideToVectorYou
-            .init()
-            .with(requireContext())
-            .load(Uri.parse(url), iv_league_logo)
+        if (!url.isNullOrEmpty()) {
+            GlideToVectorYou
+                .init()
+                .with(requireContext())
+                .load(Uri.parse(url), iv_league_logo)
+        }
         tv_league_name.text = league.name
 
         val dateTime = LocalDate.parse(date)

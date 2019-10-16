@@ -14,4 +14,7 @@ interface FixtureDao {
 
     @Query("SELECT * FROM FixtureEntity WHERE fixture_id = :fid")
     fun getFixtureById(fid : Int) : LiveData<List<FixtureEntity>>
+
+    @Query("SELECT * FROM FixtureEntity WHERE event_date = :date")
+    fun getFixtureByDate(date: String): LiveData<List<FixtureEntity>>
 }

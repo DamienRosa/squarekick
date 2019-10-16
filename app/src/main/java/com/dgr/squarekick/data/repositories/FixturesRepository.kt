@@ -10,6 +10,7 @@ import com.dgr.squarekick.data.network.responses.SafeAPIRequest
 import com.dgr.squarekick.data.network.responses.fixtures.Fixtures
 import com.dgr.squarekick.data.network.responses.fixtures.FixturesResponse
 import com.dgr.squarekick.data.network.responses.leagues.Leagues
+import com.dgr.squarekick.data.network.responses.leagues.LeaguesResponse
 import com.dgr.squarekick.utils.Coroutines
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -35,26 +36,21 @@ class FixturesRepository(
 
     suspend fun fetchLeaguesByFixtures(date: String): Map<Leagues, List<Fixtures>> {
         return coroutineScope {
+            val leaguesAsync = async { fetchLeaguesV2() }
             val fixturesAsync = async { fetchFixturesDate(date) }
 
             val fixturesList = fixturesAsync.await().api
+            val leaguesList = leaguesAsync.await().api
 
-            if (leaguesList.value!!.isEmpty() || fixturesList.results <= 0){
+            if (leaguesList.results <= 0 || fixturesList.results <= 0){
                 return@coroutineScope emptyMap<Leagues, List<Fixtures>>()
             }
 
             fixturesList.let { it ->
                 it.fixtures
-                    .groupBy { leaguesList.value!!.find { _it -> _it.league_id == it.league_id }!! }
+                    .groupBy { leaguesList.leagues.find { _it -> _it.league_id == it.league_id }!! }
                     .toSortedMap(compareBy { it.country })
             }
-        }
-    }
-
-    suspend fun getLeaguesList() : LiveData<List<LeagueEntity>>{
-        return withContext(Dispatchers.IO){
-            fetchLeagues()
-            db.getLeagueDao().getLeaguesList()
         }
     }
 
@@ -64,12 +60,29 @@ class FixturesRepository(
         }
     }
 
-    private suspend fun fetchLeagues() {
-        val response = apiRequest {
+    private suspend fun fetchLeaguesV2() : LeaguesResponse {
+        return apiRequest {
             api.getCompetitionsPerCountry()
         }
-        leaguesList.postValue(response.api.leagues)
     }
+
+
+
+
+
+//    suspend fun getLeaguesList() : LiveData<List<LeagueEntity>>{
+//        return withContext(Dispatchers.IO){
+//            fetchLeagues()
+//            db.getLeagueDao().getLeaguesList()
+//        }
+//    }
+
+//    private suspend fun fetchLeagues() {
+//        val response = apiRequest {
+//            api.getCompetitionsPerCountry()
+//        }
+//        leaguesList.postValue(response.api.leagues)
+//    }
 
     private fun saveLeagues(leagueList: List<Leagues>?) {
         Coroutines.io{
@@ -124,4 +137,11 @@ class FixturesRepository(
             db.getFixturesDao().saveAllFixtures(fixturesListDb!!)
         }
     }
+
+//    suspend fun getFixturesListByDate(date: String): LiveData<List<FixtureEntity>> {
+//        return withContext(Dispatchers.IO){
+//            fetchFixturesDate(date)
+//            db.getFixturesDao().getFixtureByDate(date)
+//        }
+//    }
 }

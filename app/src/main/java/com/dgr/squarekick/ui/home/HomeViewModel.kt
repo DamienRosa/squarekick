@@ -1,36 +1,53 @@
 package com.dgr.squarekick.ui.home
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.dgr.squarekick.data.network.responses.fixtures.Fixtures
+import com.dgr.squarekick.data.network.responses.leagues.Leagues
 import com.dgr.squarekick.data.repositories.FixturesRepository
-import com.dgr.squarekick.utils.Coroutines
 import com.dgr.squarekick.utils.NoInternetConnection
 import com.dgr.squarekick.utils.lazyDeferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class HomeViewModel(
-    private val fixturesRepository: FixturesRepository) : ViewModel() {
+class HomeViewModel(private val fixturesRepository: FixturesRepository) : ViewModel() {
 
-    var homeListener: HomeListener? = null
+    private val mFixtures =
+        MutableLiveData<Map<Leagues, List<Fixtures>>>().apply { value = emptyMap() }
+    val fixtures: LiveData<Map<Leagues, List<Fixtures>>> = mFixtures
 
-    val leagues by lazyDeferred {
-        fixturesRepository.getLeaguesList()
-    }
+    private val mProgressBar = MutableLiveData<Boolean>()
+    val progressBar : LiveData<Boolean> = mProgressBar
 
-    fun fetchFixturesDate(date: String) {
+    private val mEmptyListMessage = MutableLiveData<Boolean>()
+    val emptyListMessage : LiveData<Boolean> = mEmptyListMessage
+
+    fun fetchLeaguesFixturesByDate(date: String) {
         try {
-            Coroutines.main {
-                val fixturesList = fixturesRepository.fetchLeaguesByFixtures(date)
-                if (fixturesList.isEmpty()) {
-                    homeListener?.onEmptyList()
-                    return@main
+
+            viewModelScope.launch {
+                mProgressBar.postValue(true)
+                val res = withContext(Dispatchers.IO) {
+                    fixturesRepository.fetchLeaguesByFixtures(date)
                 }
 
-                homeListener?.onFeedLayout(date, fixturesList)
-                return@main
+                if (res.isEmpty()) {
+                    mProgressBar.postValue(false)
+                    mEmptyListMessage.postValue(true)
+                }
+
+                mProgressBar.postValue(false)
+                mFixtures.value = res
             }
         } catch (e: Exception) {
-            homeListener?.onEmptyList()
+            mProgressBar.postValue(false)
+            // General Exception
         } catch (e: NoInternetConnection) {
-            homeListener?.onEmptyList()
+            mProgressBar.postValue(false)
+            // No InternetException
         }
     }
 }

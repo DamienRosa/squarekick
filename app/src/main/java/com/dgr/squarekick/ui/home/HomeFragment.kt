@@ -6,13 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dgr.squarekick.R
 import com.dgr.squarekick.data.network.responses.fixtures.Fixtures
 import com.dgr.squarekick.data.network.responses.leagues.Leagues
-import com.dgr.squarekick.utils.Coroutines
 import com.dgr.squarekick.utils.hide
 import com.dgr.squarekick.utils.show
 import com.vivekkaushik.datepicker.OnDateSelectedListener
@@ -25,62 +25,68 @@ import org.kodein.di.generic.instance
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class HomeFragment : Fragment(), KodeinAware, HomeListener {
+class HomeFragment : Fragment(), KodeinAware {
 
-    private val viewModel: HomeViewModel by lazy {  ViewModelProviders.of(this, factory).get(HomeViewModel::class.java)}
+    private lateinit var lAdapter: GroupAdapter<ViewHolder>
+    private val factory: HomeViewModelFactory by instance()
+
+    private val viewModel: HomeViewModel by lazy { ViewModelProviders.of(this, factory).get(HomeViewModel::class.java)  }
 
     override val kodein by kodein()
 
-    private val factory: HomeViewModelFactory by instance()
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_home, container, false)
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+        inflater.inflate(R.layout.fragment_home, container, false)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel.homeListener = this
-
         val todayDate = LocalDateTime.now()
-        createDatePicker(todayDate)
-
-        bindUI(todayDate)
+        bindViewModel(todayDate)
+        bindNewUI(todayDate)
     }
 
-    private fun bindUI(todayDate: LocalDateTime) = Coroutines.main {
-        showProgressBar()
-        viewModel.leagues.await()
-        viewModel.fetchFixturesDate(todayDate.format(DateTimeFormatter.ISO_DATE))
+    private fun bindNewUI(date: LocalDateTime) {
+        createDatePicker(date)
+        initRecyclerView(viewModel.fixtures.value ?: emptyMap())
     }
 
-    override fun onEmptyList() {
-        hideProgressBar()
-        tv_empty_list.show(false)
+    private fun bindViewModel(date: LocalDateTime) {
+        val formattedDate = date.format(DateTimeFormatter.ISO_DATE)
+        viewModel.fetchLeaguesFixturesByDate(formattedDate)
+        viewModel.fixtures.observe(this, Observer {
+            val res = it.toFixtureItem()
+            lAdapter.update(res)
+            lAdapter.setOnItemClickListener { item, view ->
+                val league = (item as LeaguesFixturesItem).league.league
+                val extras = bundleOf(
+                    EXTRA_LEAGUE to league,
+                    EXTRA_FIXTURE_LIST to it[league],
+                    EXTRA_DATE to formattedDate
+                )
+
+                view.findNavController()
+                    .navigate(R.id.action_menu_home_to_leagueFixturesFragment, extras)
+            }
+        })
+
+        viewModel.progressBar.observe(this, Observer {
+            if (!it) {
+                hideProgressBar()
+            } else {
+                showProgressBar()
+            }
+        })
+
+        viewModel.emptyListMessage.observe(this, Observer {
+            if (it) {
+                tv_empty_list.show(false)
+            }
+        })
     }
 
-    override fun onFeedLayout(date: String, fixtures: Map<Leagues, List<Fixtures>>) {
-        hideProgressBar()
-        initRecyclerView(date, fixtures)
-    }
-
-    private fun initRecyclerView(date: String, fixtures: Map<Leagues, List<Fixtures>>) {
-        val lAdapter = GroupAdapter<ViewHolder>().apply {
+    private fun initRecyclerView(fixtures: Map<Leagues, List<Fixtures>>) {
+        lAdapter = GroupAdapter<ViewHolder>().apply {
             addAll(fixtures.toFixtureItem())
-        }
-        lAdapter.setOnItemClickListener { item, view ->
-            val league = (item as LeaguesFixturesItem).league.league
-            val extras = bundleOf(
-                EXTRA_LEAGUE to league,
-                EXTRA_FIXTURE_LIST to fixtures[league],
-                EXTRA_DATE to date
-            )
-
-            view.findNavController()
-                .navigate(R.id.action_menu_home_to_leagueFixturesFragment, extras)
         }
 
         rv_competitions.apply {
@@ -90,22 +96,12 @@ class HomeFragment : Fragment(), KodeinAware, HomeListener {
         }
     }
 
-    private fun hideProgressBar() {
-        fl_progress_bar.hide(false)
-        spin_kit.hide(false)
-    }
-
-    private fun showProgressBar() {
-        fl_progress_bar.show(false)
-        spin_kit.show(false)
-    }
-
     private fun Map<Leagues, List<Fixtures>>.toFixtureItem(): List<LeaguesFixturesItem> {
         return this.map { it ->
             LeaguesFixturesItem(
                 LeaguesFixtures(
                     it.key,
-                    if (!it.key.flag.isNullOrEmpty()) it.key.flag else it.key.logo,
+                    if (!it.key.flag.isNullOrEmpty()) it.key.flag!! else it.key.logo,
                     it.value.count { activeGameStatusList.contains(it.statusShort) },
                     it.value.count()
                 )
@@ -121,9 +117,8 @@ class HomeFragment : Fragment(), KodeinAware, HomeListener {
         )
         datePickerTimeline.setOnDateSelectedListener(object : OnDateSelectedListener {
             override fun onDateSelected(year: Int, month: Int, day: Int, dayOfWeek: Int) {
-                showProgressBar()
-                val newDate = LocalDateTime.of(year, month+1, day, 0, 0)
-                viewModel.fetchFixturesDate(newDate.format(DateTimeFormatter.ISO_DATE))
+                val newDate = LocalDateTime.of(year, month + 1, day, 0, 0)
+                viewModel.fetchLeaguesFixturesByDate(newDate.format(DateTimeFormatter.ISO_DATE))
             }
 
             override fun onDisabledDateSelected(
@@ -132,6 +127,16 @@ class HomeFragment : Fragment(), KodeinAware, HomeListener {
             }
 
         })
+    }
+
+    private fun hideProgressBar() {
+        fl_progress_bar.hide(false)
+        spin_kit.hide(false)
+    }
+
+    private fun showProgressBar() {
+        fl_progress_bar.show(false)
+        spin_kit.show(false)
     }
 
     companion object {
