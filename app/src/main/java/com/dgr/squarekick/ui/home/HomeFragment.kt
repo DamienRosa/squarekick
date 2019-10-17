@@ -11,8 +11,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dgr.squarekick.R
-import com.dgr.squarekick.data.network.responses.fixtures.Fixtures
-import com.dgr.squarekick.data.network.responses.leagues.Leagues
 import com.dgr.squarekick.utils.hide
 import com.dgr.squarekick.utils.show
 import com.vivekkaushik.datepicker.OnDateSelectedListener
@@ -27,7 +25,7 @@ import java.time.format.DateTimeFormatter
 
 class HomeFragment : Fragment(), KodeinAware {
 
-    private lateinit var lAdapter: GroupAdapter<ViewHolder>
+    private val lAdapter: GroupAdapter<ViewHolder> by lazy { GroupAdapter<ViewHolder>() }
     private val factory: HomeViewModelFactory by instance()
 
     private val viewModel: HomeViewModel by lazy { ViewModelProviders.of(this, factory).get(HomeViewModel::class.java)  }
@@ -47,20 +45,19 @@ class HomeFragment : Fragment(), KodeinAware {
 
     private fun bindNewUI(date: LocalDateTime) {
         createDatePicker(date)
-        initRecyclerView(viewModel.fixtures.value ?: emptyMap())
+        initRecyclerView()
     }
 
     private fun bindViewModel(date: LocalDateTime) {
         val formattedDate = date.format(DateTimeFormatter.ISO_DATE)
         viewModel.fetchLeaguesFixturesByDate(formattedDate)
-        viewModel.fixtures.observe(this, Observer {
-            val res = it.toFixtureItem()
-            lAdapter.update(res)
+        viewModel.leagueFixtures.observe(this, Observer {
+            lAdapter.update(it)
             lAdapter.setOnItemClickListener { item, view ->
                 val league = (item as LeaguesFixturesItem).league.league
                 val extras = bundleOf(
                     EXTRA_LEAGUE to league,
-                    EXTRA_FIXTURE_LIST to it[league],
+                    EXTRA_FIXTURE_LIST to viewModel.getFixture(league),
                     EXTRA_DATE to formattedDate
                 )
 
@@ -84,28 +81,11 @@ class HomeFragment : Fragment(), KodeinAware {
         })
     }
 
-    private fun initRecyclerView(fixtures: Map<Leagues, List<Fixtures>>) {
-        lAdapter = GroupAdapter<ViewHolder>().apply {
-            addAll(fixtures.toFixtureItem())
-        }
-
+    private fun initRecyclerView() {
         rv_competitions.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
             adapter = lAdapter
-        }
-    }
-
-    private fun Map<Leagues, List<Fixtures>>.toFixtureItem(): List<LeaguesFixturesItem> {
-        return this.map { it ->
-            LeaguesFixturesItem(
-                LeaguesFixtures(
-                    it.key,
-                    if (!it.key.flag.isNullOrEmpty()) it.key.flag!! else it.key.logo,
-                    it.value.count { activeGameStatusList.contains(it.statusShort) },
-                    it.value.count()
-                )
-            )
         }
     }
 
@@ -144,6 +124,5 @@ class HomeFragment : Fragment(), KodeinAware {
         const val EXTRA_FIXTURE_LIST = "fixtures_list_extra"
         const val EXTRA_DATE = "date_extra"
 
-        private val activeGameStatusList = mutableListOf("1H", "HT", "2H", "ET", "P", "BT")
     }
 }

@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class FixturesAdapter(private val fixturesList: ArrayList<Fixtures>) :
+class FixturesAdapter(private val fixturesList: List<Fixtures> = emptyList()) :
     RecyclerView.Adapter<FixturesAdapter.FixtureViewHolder>() {
 
     private lateinit var context: Context
@@ -32,7 +32,7 @@ class FixturesAdapter(private val fixturesList: ArrayList<Fixtures>) :
         return FixtureViewHolder(inflater)
     }
 
-    override fun getItemCount(): Int = if (fixturesList.size <= 0) -1 else fixturesList.size
+    override fun getItemCount(): Int = fixturesList.size
 
     override fun onBindViewHolder(holder: FixtureViewHolder, position: Int) {
         val fixture = fixturesList[position]
