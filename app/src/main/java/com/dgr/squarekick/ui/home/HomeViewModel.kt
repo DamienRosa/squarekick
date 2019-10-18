@@ -14,9 +14,10 @@ import kotlinx.coroutines.withContext
 
 class HomeViewModel(private val fixturesRepository: FixturesRepository) : ViewModel() {
 
-    private val mFixtures =
-        MutableLiveData<Map<Leagues, List<Fixtures>>>().apply { value = emptyMap() }
-    val fixtures: LiveData<Map<Leagues, List<Fixtures>>> = mFixtures
+    private var response : Map<Leagues, List<Fixtures>> = emptyMap()
+    private val mLeagueFeatureItems = MutableLiveData<List<LeaguesFixturesItem>>()
+
+    val leagueFixtures: LiveData<List<LeaguesFixturesItem>> = mLeagueFeatureItems
 
     private val mProgressBar = MutableLiveData<Boolean>()
     val progressBar : LiveData<Boolean> = mProgressBar
@@ -29,17 +30,16 @@ class HomeViewModel(private val fixturesRepository: FixturesRepository) : ViewMo
 
             viewModelScope.launch {
                 mProgressBar.postValue(true)
-                val res = withContext(Dispatchers.IO) {
+                response = withContext(Dispatchers.IO) {
                     fixturesRepository.fetchLeaguesByFixtures(date)
                 }
 
-                if (res.isEmpty()) {
-                    mProgressBar.postValue(false)
+                if (response.isEmpty()) {
                     mEmptyListMessage.postValue(true)
                 }
 
                 mProgressBar.postValue(false)
-                mFixtures.value = res
+                mLeagueFeatureItems.value= response.toFixtureItem()
             }
         } catch (e: Exception) {
             mProgressBar.postValue(false)
@@ -48,5 +48,24 @@ class HomeViewModel(private val fixturesRepository: FixturesRepository) : ViewMo
             mProgressBar.postValue(false)
             // No InternetException
         }
+    }
+
+    fun getFixture(leagues: Leagues) = response[leagues]
+
+    private fun Map<Leagues, List<Fixtures>>.toFixtureItem(): List<LeaguesFixturesItem> {
+        return this.map { it ->
+            LeaguesFixturesItem(
+                LeaguesFixtures(
+                    it.key,
+                    if (!it.key.flag.isNullOrEmpty()) it.key.flag!! else it.key.logo,
+                    it.value.count { activeGameStatusList.contains(it.statusShort) },
+                    it.value.count()
+                )
+            )
+        }
+    }
+
+    companion object{
+        private val activeGameStatusList = listOf("1H", "HT", "2H", "ET", "P", "BT")
     }
 }
