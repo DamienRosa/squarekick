@@ -15,8 +15,8 @@ import kotlinx.coroutines.withContext
 class HomeViewModel(private val fixturesRepository: FixturesRepository) : ViewModel() {
 
     private var response : Map<Leagues, List<Fixtures>> = emptyMap()
-    private val mLeagueFeatureItems = MutableLiveData<List<LeaguesFixturesItem>>()
 
+    private val mLeagueFeatureItems = MutableLiveData<List<LeaguesFixturesItem>>()
     val leagueFixtures: LiveData<List<LeaguesFixturesItem>> = mLeagueFeatureItems
 
     private val mProgressBar = MutableLiveData<Boolean>()
@@ -27,7 +27,6 @@ class HomeViewModel(private val fixturesRepository: FixturesRepository) : ViewMo
 
     fun fetchLeaguesFixturesByDate(date: String) {
         try {
-
             viewModelScope.launch {
                 mProgressBar.postValue(true)
                 response = withContext(Dispatchers.IO) {

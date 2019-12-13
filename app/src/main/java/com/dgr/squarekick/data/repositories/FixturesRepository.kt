@@ -42,7 +42,7 @@ class FixturesRepository(
             val fixturesList = fixturesAsync.await().api
             val leaguesList = leaguesAsync.await().api
 
-            if (leaguesList.results <= 0 || fixturesList.results <= 0){
+            if (leaguesList.results <= 0 || fixturesList.results <= 0) {
                 return@coroutineScope emptyMap<Leagues, List<Fixtures>>()
             }
 
@@ -60,14 +60,17 @@ class FixturesRepository(
         }
     }
 
-    private suspend fun fetchLeaguesV2() : LeaguesResponse {
+    private suspend fun fetchLeaguesV2(): LeaguesResponse {
         return apiRequest {
             api.getCompetitionsPerCountry()
         }
     }
 
-
-
+    suspend fun fetchFixtureById(fId: Int) : FixturesResponse {
+        return apiRequest {
+            api.getFixtureById(fId)
+        }
+    }
 
 
 //    suspend fun getLeaguesList() : LiveData<List<LeagueEntity>>{
@@ -85,7 +88,7 @@ class FixturesRepository(
 //    }
 
     private fun saveLeagues(leagueList: List<Leagues>?) {
-        Coroutines.io{
+        Coroutines.io {
             val leaguesListDb = leagueList?.map {
                 LeagueEntity(
                     it.league_id,
@@ -96,14 +99,15 @@ class FixturesRepository(
                     it.season_end,
                     it.flag ?: it.logo,
                     it.standings,
-                    it.is_current)
+                    it.is_current
+                )
             }
             db.getLeagueDao().saveAllLeagues(leaguesListDb!!)
         }
     }
 
-    suspend fun getFixtureDetails(fixturesId: Int) : LiveData<List<FixtureEntity>> {
-        return withContext(Dispatchers.IO){
+    suspend fun getFixtureDetails(fixturesId: Int): LiveData<List<FixtureEntity>> {
+        return withContext(Dispatchers.IO) {
             fetchFixtureDetails(fixturesId)
             db.getFixturesDao().getFixtureById(fixturesId)
         }

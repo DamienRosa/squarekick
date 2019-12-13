@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    private var appBarConfiguration: AppBarConfiguration? = null
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         )
         val navController = Navigation.findNavController(this, R.id.fragment_navigator)
         NavigationUI.setupWithNavController(nav_view, navController)
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration!!)
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
                 this,
                 R.id.fragment_navigator
             ),
-            appBarConfiguration!!
+            appBarConfiguration
         )
     }
 

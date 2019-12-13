@@ -16,13 +16,13 @@ import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
 import kotlinx.android.synthetic.main.fragment_league_fixtures.*
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.*
+import java.util.ArrayList
 
 class LeagueFixturesFragment : Fragment() {
 
-    private lateinit var date: String
-    private lateinit var fixturesList: ArrayList<Fixtures>
-    private lateinit var league: Leagues
+    private var fixturesList: ArrayList<Fixtures>? = null
+    private var date: String? = null
+    private var league: Leagues? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,28 +34,35 @@ class LeagueFixturesFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        league = arguments?.getParcelable(HomeFragment.EXTRA_LEAGUE) as Leagues
-        date = arguments?.getString(HomeFragment.EXTRA_DATE, "NO DATE")!!
-        fixturesList =
-            arguments?.getParcelableArrayList<Fixtures>(HomeFragment.EXTRA_FIXTURE_LIST)!!
-
-        val url = if (!league.flag.isNullOrEmpty()) league.flag else league.logo
-        if (!url.isNullOrEmpty()) {
-            GlideToVectorYou
-                .init()
-                .with(requireContext())
-                .load(Uri.parse(url), iv_league_logo)
+        arguments?.let {
+            league = it.getParcelable(HomeFragment.EXTRA_LEAGUE) as? Leagues
+            date = it.getString(HomeFragment.EXTRA_DATE, "NO DATE")
+            fixturesList = it.getParcelableArrayList<Fixtures>(HomeFragment.EXTRA_FIXTURE_LIST)
         }
-        tv_league_name.text = league.name
 
-        val dateTime = LocalDate.parse(date)
-        tv_fixtures_date.text = dateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
+        if (league != null) {
+            val url = if (!league?.flag.isNullOrEmpty()) league?.flag else league?.logo
+            if (url!!.isNotEmpty()) {
+                GlideToVectorYou
+                    .init()
+                    .with(requireContext())
+                    .load(Uri.parse(url), iv_league_logo)
+            }
+            tv_league_name.text = league?.name
+        }
 
-        val fixturesAdapter = FixturesAdapter(fixturesList)
-        rv_fixtures.apply {
-            layoutManager = LinearLayoutManager(context)
-            setHasFixedSize(true)
-            adapter = fixturesAdapter
+        if (date != null && date != "NO DATE") {
+            val dateTime = LocalDate.parse(date)
+            tv_fixtures_date.text = dateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
+        }
+
+        if (fixturesList != null) {
+            val fixturesAdapter = FixturesAdapter(fixturesList!!)
+            rv_fixtures.apply {
+                layoutManager = LinearLayoutManager(context)
+                setHasFixedSize(true)
+                adapter = fixturesAdapter
+            }
         }
     }
 }

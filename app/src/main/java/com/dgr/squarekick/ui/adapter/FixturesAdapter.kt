@@ -43,7 +43,6 @@ class FixturesAdapter(private val fixturesList: List<Fixtures> = emptyList()) :
 
         fun bindFixture(fixture: Fixtures, context: Context) {
             itemView.setOnClickListener {
-                Log.e("FixtureAdapter", "data ${fixture.fixture_id}")
                 val extras = bundleOf(EXTRA_FIXTURE to fixture.fixture_id)
                 itemView.findNavController()
                     .navigate(R.id.action_leagueFixturesFragment_to_gameDetailsFragment, extras)

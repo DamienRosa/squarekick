@@ -34,19 +34,17 @@ class GameDetailsFragment : Fragment(), KodeinAware {
 
         viewModel = ViewModelProviders.of(this, GameDetailsViewModelFactory(repository, fixturesId)).get(GameDetailsViewModel::class.java)
 
-        bindUI(fixturesId)
+        bindUI()
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
+    private fun bindUI() {
+        viewModel.fetchFixtureDetails(fixturesId)
+        viewModel.fixturesResponse.observe(this, Observer {
+            Log.e("GameDetailsFragment", "elapsed ${it.api.fixtures[0].elapsed}")
 
-    private fun bindUI(fixturesId: Int) = Coroutines.main {
-//        showProgressBar()
-        viewModel.fixtureDetails.await().observe(this, Observer {
-            Log.e("GameDetailsFragment", "fid ${it[0].status}")
         })
     }
+
     companion object{
         const val EXTRA_FIXTURE: String = "extra_fixture"
     }
