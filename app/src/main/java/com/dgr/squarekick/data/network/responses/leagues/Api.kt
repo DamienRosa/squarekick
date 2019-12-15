@@ -13,7 +13,6 @@ For support, please feel free to contact me at https://www.linkedin.com/in/syeda
 
 
 data class Api(
-
     val results: Int,
     val leagues: List<Leagues>
 )

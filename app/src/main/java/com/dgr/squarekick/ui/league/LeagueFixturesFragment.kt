@@ -16,7 +16,7 @@ import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
 import kotlinx.android.synthetic.main.fragment_league_fixtures.*
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.ArrayList
+import java.util.*
 
 class LeagueFixturesFragment : Fragment() {
 

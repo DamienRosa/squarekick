@@ -43,6 +43,9 @@ android {
     androidExtensions {
         experimental = true
     }
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {
@@ -67,6 +70,8 @@ dependencies {
     // Kotlin co-routines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinx_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinx_version"
+
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlinx_version"
 
     //ViewModel and LiveData
     implementation "androidx.lifecycle:lifecycle-extensions:$livedata_version"
@@ -101,4 +106,7 @@ dependencies {
     kapt 'com.github.bumptech.glide:compiler:4.9.0'
 
     implementation 'com.github.corouteam:GlideToVectorYou:v2.0.0'
+
+    testImplementation 'org.mockito:mockito-inline:3.0.0'
+    testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0'
 }

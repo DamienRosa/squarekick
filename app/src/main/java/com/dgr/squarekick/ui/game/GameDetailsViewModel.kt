@@ -11,15 +11,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class GameDetailsViewModel(private val fixturesRepository: FixturesRepository, fid: Int) : ViewModel() {
+class GameDetailsViewModel(private val fixturesRepository: FixturesRepository) : ViewModel() {
 
     private val mFixturesDetails = MutableLiveData<FixturesResponse>()
     val fixturesResponse : LiveData<FixturesResponse> = mFixturesDetails
-
-//    val fixtureDetails by lazyDeferred {
-//        Log.e("GameDetailsViewModel", "fid $fid")
-//        fixturesRepository.getFixtureDetails(fid)
-//    }
 
     fun fetchFixtureDetails(fid: Int) {
         try {

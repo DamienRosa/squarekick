@@ -10,7 +10,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.dgr.squarekick.R
 import com.dgr.squarekick.data.repositories.FixturesRepository
-import com.dgr.squarekick.utils.Coroutines
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.kodein
 import org.kodein.di.generic.instance
@@ -32,7 +31,7 @@ class GameDetailsFragment : Fragment(), KodeinAware {
         super.onActivityCreated(savedInstanceState)
         arguments?.let { fixturesId = it.getInt(EXTRA_FIXTURE, 0) }
 
-        viewModel = ViewModelProviders.of(this, GameDetailsViewModelFactory(repository, fixturesId)).get(GameDetailsViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, GameDetailsViewModelFactory(repository)).get(GameDetailsViewModel::class.java)
 
         bindUI()
     }
