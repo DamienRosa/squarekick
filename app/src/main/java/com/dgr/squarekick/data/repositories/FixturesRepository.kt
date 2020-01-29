@@ -46,7 +46,7 @@ class FixturesRepository(
 
     override suspend fun fetchLeagues(): LeaguesResponse {
         return apiRequest {
-            api.getCompetitionsPerCountry()
+            api.getLeagues()
         }
     }
 

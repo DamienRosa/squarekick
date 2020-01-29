@@ -14,44 +14,47 @@ import kotlinx.coroutines.withContext
 
 class HomeViewModel(private val fixturesRepository: FixturesRepository) : ViewModel() {
 
-    private var response : Map<Leagues, List<Fixtures>> = emptyMap()
+    private var response: Map<Leagues, List<Fixtures>> = emptyMap()
 
     private val mLeagueFeatureItems = MutableLiveData<List<LeaguesFixturesItem>>()
     val leagueFixtures: LiveData<List<LeaguesFixturesItem>> = mLeagueFeatureItems
 
     private val mProgressBar = MutableLiveData<Boolean>()
-    val progressBar : LiveData<Boolean> = mProgressBar
+    val progressBar: LiveData<Boolean> = mProgressBar
 
     private val mEmptyListMessage = MutableLiveData<Boolean>()
-    val emptyListMessage : LiveData<Boolean> = mEmptyListMessage
+    val emptyListMessage: LiveData<Boolean> = mEmptyListMessage
 
     fun fetchLeaguesFixturesByDate(date: String) {
         try {
             viewModelScope.launch {
+                mEmptyListMessage.postValue(false)
                 mProgressBar.postValue(true)
                 response = withContext(Dispatchers.IO) {
                     fixturesRepository.fetchLeaguesByFixtures(date)
                 }
 
-                if (response.isEmpty()) {
-                    mEmptyListMessage.postValue(true)
-                }
-
                 mProgressBar.postValue(false)
-                mLeagueFeatureItems.value= response.toFixtureItem()
+                if (response.isNullOrEmpty()) {
+                    mEmptyListMessage.postValue(true)
+                } else {
+                    mLeagueFeatureItems.value = response.toFixtureItem()
+                }
             }
         } catch (e: Exception) {
             mProgressBar.postValue(false)
+            mEmptyListMessage.postValue(true)
             // General Exception
         } catch (e: NoInternetConnection) {
             mProgressBar.postValue(false)
+            mEmptyListMessage.postValue(true)
             // No InternetException
         }
     }
 
     fun getFixture(leagues: Leagues) = response[leagues]
 
-    private fun Map<Leagues, List<Fixtures>>.toFixtureItem(): List<LeaguesFixturesItem> {
+    fun Map<Leagues, List<Fixtures>>.toFixtureItem(): List<LeaguesFixturesItem> {
         return this.map { it ->
             LeaguesFixturesItem(
                 LeaguesFixtures(
@@ -64,7 +67,7 @@ class HomeViewModel(private val fixturesRepository: FixturesRepository) : ViewMo
         }
     }
 
-    companion object{
+    companion object {
         private val activeGameStatusList = listOf("1H", "HT", "2H", "ET", "P", "BT")
     }
 }

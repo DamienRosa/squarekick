@@ -13,6 +13,8 @@ import com.dgr.squarekick.data.repositories.FixturesRepository
 import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.IsEqual
 import org.junit.Before
@@ -31,7 +33,7 @@ class FixturesRepositoryTest {
     @Mock
     lateinit var mockSquareKickDataBase: SquareKickDataBase
 
-    lateinit var fixturesRepository: FixturesRepository
+    private lateinit var fixturesRepository: FixturesRepository
 
     @ExperimentalCoroutinesApi
     @get:Rule
@@ -42,7 +44,7 @@ class FixturesRepositoryTest {
         MockitoAnnotations.initMocks(this)
 
         mainCorountineRule.runBlockingTest {
-            whenever(mockApiFootballAPI.getCompetitionsPerCountry()).thenReturn(
+            whenever(mockApiFootballAPI.getLeagues()).thenReturn(
                 Response.success(mockedResponseLeague)
             )
             whenever(mockApiFootballAPI.getFixtureById(1)).thenReturn(
@@ -59,7 +61,9 @@ class FixturesRepositoryTest {
     fun testGetLeagues_receiveOneItem() {
         mainCorountineRule.runBlockingTest {
             val testObserver = fixturesRepository.fetchLeagues()
-            assertThat(testObserver.api.leagues, IsEqual(listOf(mockedLeague)))
+            assertThat(testObserver.api.leagues, `is`(not(emptyList())))
+            assertThat(testObserver, IsEqual(mockedResponseLeague))
+            assertThat(testObserver.api.leagues.size, IsEqual(1))
         }
     }
 
@@ -67,7 +71,9 @@ class FixturesRepositoryTest {
     fun testGetFixturesById_receiveOneItem() {
         mainCorountineRule.runBlockingTest {
             val testObserver = fixturesRepository.fetchFixtureById(1)
-            assertThat(testObserver.api.fixtures, IsEqual(listOf(mockedFixture)))
+            assertThat(testObserver.api.fixtures, `is`(not(emptyList())))
+            assertThat(testObserver, IsEqual(mockedResponseFixtures))
+            assertThat(testObserver.api.fixtures.size, IsEqual(1))
         }
     }
 
@@ -75,7 +81,20 @@ class FixturesRepositoryTest {
     fun testGetFixturesByDate_receiveOneItem() {
         mainCorountineRule.runBlockingTest {
             val testObserver = fixturesRepository.fetchFixturesDate("2019-12-12")
-            assertThat(testObserver.api.fixtures, IsEqual(listOf(mockedFixture)))
+            assertThat(testObserver.api.fixtures, `is`(not(emptyList())))
+            assertThat(testObserver, IsEqual(mockedResponseFixtures))
+            assertThat(testObserver.api.fixtures.size, IsEqual(1))
+        }
+    }
+
+    @Test
+    fun testGetFixturesPerLeagueByDate_receiveOneItem() {
+        mainCorountineRule.runBlockingTest {
+            val testResult = fixturesRepository.fetchLeaguesByFixtures("2019-12-12")
+            assertThat(testResult, `is`(not(emptyMap())))
+            assertThat(testResult, IsEqual(mockedMapLeaguesFixtures))
+            assertThat(testResult.keys.size, IsEqual(1))
+            assertThat(testResult.entries.size, IsEqual(1))
         }
     }
 
@@ -114,7 +133,7 @@ class FixturesRepositoryTest {
                 0,
                 0,
                 null
-                )
+            )
 
         private val mockedResponseLeague =
             LeaguesResponse(Api(1, listOf(mockedLeague)))
@@ -126,5 +145,7 @@ class FixturesRepositoryTest {
                     listOf(mockedFixture)
                 )
             )
+
+        private val mockedMapLeaguesFixtures = mapOf(Pair(mockedLeague, listOf(mockedFixture)))
     }
 }

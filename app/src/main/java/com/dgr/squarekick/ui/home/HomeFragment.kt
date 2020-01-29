@@ -77,6 +77,8 @@ class HomeFragment : Fragment(), KodeinAware {
         viewModel.emptyListMessage.observe(this, Observer {
             if (it) {
                 tv_empty_list.show(false)
+            } else {
+                tv_empty_list.hide(false)
             }
         })
     }

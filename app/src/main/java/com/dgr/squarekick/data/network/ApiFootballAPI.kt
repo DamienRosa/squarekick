@@ -15,7 +15,7 @@ interface ApiFootballAPI {
     suspend fun getFixturesByDate(@Path("date") date: String): Response<FixturesResponse>
 
     @GET("leagues")
-    suspend fun getCompetitionsPerCountry(): Response<LeaguesResponse>
+    suspend fun getLeagues(): Response<LeaguesResponse>
 
     @GET("fixtures/id/{fixture_id}")
     suspend fun getFixtureById(@Path("fixture_id") fixtureId : Int) : Response<FixturesResponse>

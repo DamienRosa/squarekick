@@ -17,6 +17,7 @@ buildscript {
     ext.junit_version = '4.12'
     ext.runner_version = '1.2.0'
     ext.espresso_version = '3.2.0'
+    ext.archTestingVersion = '2.0.0'
 
     repositories {
         google()
